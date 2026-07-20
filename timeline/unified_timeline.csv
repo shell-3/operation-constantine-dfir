@@ -1,0 +1,30 @@
+time_utc,event,technique,evidence_source
+06:12:04,SECHEALTHUI.EXE launched - manual access to Windows Security GUI,T1562.001,Prefetch (Addendum A.2.2)
+06:12:15,Windows Defender real-time protection disabled,T1562.001,Defender EID 5001 (Addendum A.2.1)
+06:13:27,C2 agent (splunkd.exe) deployment command issued,T1059.001/T1071,JSON host_group.created; ConsoleHost_history.txt
+06:21:30-06:21:44,Windows Defender detects and quarantines a related implant,N/A,Defender EID 1116/1117 (Addendum A.2.1)
+07:01:41,Sysmon log cleared (wevtutil cl) - logging restart,T1070.001,Sysmon (first EID record)
+07:01:48,LSASS access 0x1FFFFF from splunkd.exe every 10s,T1003.001/T1134,Sysmon EID 10 (SCR-012)
+07:16:43,First confirmed C2 beacon in PCAP,T1071,PCAP Packet #3 Stream 0 (Addendum A.5)
+07:21:59,First POST /file/upload to C2 (initial staging),T1041,PCAP
+07:27:10,anmar_hacking.exe spawns PowerShell and downloads Invoke-Mimikatz.ps1,T1059.001/T1003.001,Sysmon EID 1 (Addendum A.3.1)
+07:58:40,Caldera: identify active user ($env:username),T1033,JSON Step 01
+07:59:25,Caldera: enumerate local accounts,T1087.001,JSON Step 02
+08:00:35,Caldera: discover running processes,T1057,JSON Step 03
+08:01:17,Caldera: network share discovery (Get-SmbShare),T1135,JSON Step 04
+08:02:58,Caldera: security software discovery via WMIC,T1518.001,JSON Step 06 + Prefetch
+08:07:49,Staging directory created: C:\Windows\system32\staged,T1074.001,JSON Step 12
+08:10:47,Defender configuration change (secondary event EID 5007),T1562.001,JSON Step 15; reclassified per Addendum A.2
+08:13:32,Clear Windows Event Logs (batch),T1070.001,JSON Step 18
+08:14:19,NETSH.EXE executed - firewall modification,T1562.004,Prefetch (Addendum A.6)
+08:15:00,Hidden files created (Attrib +H +S),T1564.001,JSON Step 20
+08:16:52,File-extension masquerade: VBS to PNG/XLSX (3 files),T1036.007,JSON Step 22 + Prefetch
+08:20:22,Hidden user account $ created (net user parent anmar_hacking.exe),T1136.001/T1564.002,Sysmon EID 1 + SAM hive (Addendum A.4)
+08:25:23-08:26:55,Sensitive files copied to staging directory (3 rounds),T1074.001,JSON Steps 31-33
+08:27:45,Staging folder compressed to staged.zip,T1560.001,JSON Step 34
+08:28:32,staged.zip exfiltrated via POST /file/upload (confirmed final),T1041,PCAP SCR-011 + JSON Step 35
+08:47:44,NulltackKatz_v1.3.py executed (python.exe),T1204.002,Prefetch SCR-003
+08:48:09,Mimikatz.exe executed - on-disk LSASS credential dump,T1003.001,Prefetch SCR-003
+09:15:37,anmar_hacking.exe process terminated,N/A,Sysmon EID 5 (Addendum A.3.2)
+10:06:39,Desktop wallpaper changed to C:\nulltack.png (defacement),T1491,NTUSER.DAT SCR-007
+10:07:24,Last confirmed splunkd.exe C2 agent activity,T1071,Prefetch SCR-003

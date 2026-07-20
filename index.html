@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operation Constantine — DFIR Case Report</title>
+<meta name="description" content="Full digital forensics and incident response case file for Operation Constantine: a Caldera-emulated APT intrusion, reconstructed and mapped to MITRE ATT&CK across 30 confirmed techniques.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%230a0d12%22/><text x=%2250%22 y=%2268%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23d13438%22>C</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="nav-brand"><span class="dot"></span>OPERATION_CONSTANTINE</a>
+    <div class="nav-links">
+      <a href="#summary">Summary</a>
+      <a href="#streams">Attack Streams</a>
+      <a href="#killchain">Kill Chain</a>
+      <a href="#mitre">MITRE ATT&CK</a>
+      <a href="#evidence">Evidence</a>
+      <a href="#downloads">Downloads</a>
+    </div>
+    <a class="nav-cta" href="report/Operation_Constantine_DFIR_Report.pdf">Get Report ↓</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-badges">
+      <span class="badge amber">TLP:AMBER</span>
+      <span class="badge">CASE 20-DISK_ACQUISITION_50_55_-18_GOLDEN</span>
+      <span class="badge green">30 TECHNIQUES CONFIRMED</span>
+    </div>
+    <h1>OPERATION<br><span>CONSTANTINE</span></h1>
+    <p class="subtitle">A financially-motivated intrusion against DESKTOP-2A1O8LD, reconstructed end-to-end from disk, memory, registry, and network evidence — and independently re-validated against its own forensic artifacts before publication.</p>
+
+    <div class="hero-stats">
+      <div class="hstat accent"><div class="n">3h 55m</div><div class="l">campaign window, 06:12Z – 10:07Z</div></div>
+      <div class="hstat"><div class="n">35</div><div class="l">Caldera abilities executed</div></div>
+      <div class="hstat"><div class="n">30 <span style="color:var(--amber)">+1</span></div><div class="l">MITRE techniques confirmed / observed-intent</div></div>
+      <div class="hstat"><div class="n">3</div><div class="l">concurrent attack streams identified</div></div>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="summary">
+  <div class="wrap">
+    <div class="eyebrow">01 — Executive Summary</div>
+    <div class="section-head">
+      <h2>What actually happened on this host</h2>
+      <p>Full findings in the report. Short version below.</p>
+    </div>
+    <div class="summary-card">
+      <p>On 2026-07-05, workstation <strong>DESKTOP-2A1O8LD</strong> was compromised by a threat group designated the <strong>Constantine Group</strong>, via a spearphishing email impersonating internal IT Security. The victim executed a malicious Python payload; the attacker separately deployed a concealed C2 implant (<strong>splunkd.exe</strong>, masquerading as a legitimate Splunk binary) that beaconed to <strong>192.168.67.128:8888</strong> over unencrypted HTTP.</p>
+      <p>The Caldera-driven agent executed <strong>35 documented abilities</strong>, of which <strong>30 map to forensically confirmed MITRE ATT&CK techniques</strong> spanning the full attack lifecycle — discovery, credential access, defense evasion, collection, and exfiltration. Sensitive data was staged, archived, and exfiltrated before a secondary implant and a separate manual credential-harvesting track were identified running concurrently.</p>
+      <div class="verdict">
+        <span class="vtag">NEGATIVE FINDING</span>
+        <span>Registry Run Key persistence (T1547.001) was the scenario's documented intent, but six independent forensic sources confirm it was <strong>not implemented</strong> on the physical disk. It is tracked separately as Observed Scenario Intent rather than a confirmed execution — see Section 5.3 of the full report.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="streams">
+  <div class="wrap">
+    <div class="eyebrow">02 — Attack Reconstruction</div>
+    <div class="section-head">
+      <h2>Three streams, not one chain</h2>
+      <p>Forensic reconstruction shows this wasn't a single linear tool chain. Three independently-evidenced activity streams ran concurrently and sequentially — distinguished by process lineage, Sysmon telemetry, and Prefetch. Hover a node for its timestamp.</p>
+    </div>
+    <div class="streams">
+      <div class="stream-row">
+        <div class="stream-label s1">
+          <div class="sname">STREAM 1 — Caldera Automated</div>
+          <div class="swindow">06:13:27Z → 10:07:24Z</div>
+        </div>
+        <div class="stream-track">
+          <div class="rail" id="rail1"></div>
+        </div>
+      </div>
+      <div class="stream-row">
+        <div class="stream-label s2">
+          <div class="sname">STREAM 2 — Secondary Implant</div>
+          <div class="swindow">07:27:10Z → 09:15:37Z</div>
+        </div>
+        <div class="stream-track">
+          <div class="rail" id="rail2"></div>
+        </div>
+      </div>
+      <div class="stream-row">
+        <div class="stream-label s3">
+          <div class="sname">STREAM 3 — Manual On-Disk Tooling</div>
+          <div class="swindow">08:47:44Z → 08:48:09Z</div>
+        </div>
+        <div class="stream-track">
+          <div class="rail" id="rail3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="killchain">
+  <div class="wrap">
+    <div class="eyebrow">03 — Kill Chain</div>
+    <div class="section-head">
+      <h2>Eight tactical phases</h2>
+      <p>Initial access to impact, each phase corroborated by at least one independent evidence source.</p>
+    </div>
+    <div class="killchain">
+      <div class="kc-node"><div class="num">01</div><div class="title">Initial Access</div><div class="tech">T1566.001</div></div>
+      <div class="kc-node"><div class="num">02</div><div class="title">Execution</div><div class="tech">T1204.002<br>T1059.001</div></div>
+      <div class="kc-node"><div class="num">03</div><div class="title">Discovery</div><div class="tech">T1087 · T1016<br>T1057 · T1135</div></div>
+      <div class="kc-node"><div class="num">04</div><div class="title">Privilege Escalation</div><div class="tech">T1134</div></div>
+      <div class="kc-node"><div class="num">05</div><div class="title">Credential Access</div><div class="tech">T1003.001</div></div>
+      <div class="kc-node"><div class="num">06</div><div class="title">Collection &amp; Staging</div><div class="tech">T1074.001<br>T1560.001</div></div>
+      <div class="kc-node"><div class="num">07</div><div class="title">Command &amp; Control</div><div class="tech">T1071</div></div>
+      <div class="kc-node"><div class="num">08</div><div class="title">Exfil / Impact</div><div class="tech">T1041 · T1491</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="dashboard">
+  <div class="wrap">
+    <div class="eyebrow">04 — Findings Dashboard</div>
+    <div class="section-head">
+      <h2>Case metrics</h2>
+    </div>
+    <div class="dash-grid">
+      <div class="dcell"><div class="k">Target Host</div><div class="v">DESKTOP-2A1O8LD</div></div>
+      <div class="dcell"><div class="k">Attacker C2</div><div class="v">192.168.67.128:8888</div></div>
+      <div class="dcell"><div class="k">C2 Agent (Primary)</div><div class="v">C:\Users\Public\splunkd.exe</div></div>
+      <div class="dcell"><div class="k">C2 Agent (Secondary)</div><div class="v">C:\Users\Public\anmar_hacking.exe</div></div>
+      <div class="dcell"><div class="k">C2 Deployment Command</div><div class="v">2026-07-05T06:13:27Z</div></div>
+      <div class="dcell"><div class="k">First Confirmed Beacon</div><div class="v">2026-07-05T07:16:43Z</div></div>
+      <div class="dcell"><div class="k">Defender First Disabled</div><div class="v">2026-07-05T06:12:15Z</div></div>
+      <div class="dcell"><div class="k">Total Beacons</div><div class="v">183 POST /beacon</div></div>
+      <div class="dcell"><div class="k">Exfil Method</div><div class="v">HTTP POST /file/upload</div></div>
+      <div class="dcell"><div class="k">Staging Directory</div><div class="v">C:\Windows\system32\staged</div></div>
+      <div class="dcell"><div class="k">Log Tampering</div><div class="v warn">wevtutil cl — Sysmon cleared</div></div>
+      <div class="dcell"><div class="k">Persistence (T1547.001)</div><div class="v neg">Not confirmed — observed intent only</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="mitre">
+  <div class="wrap">
+    <div class="eyebrow">05 — MITRE ATT&CK Mapping</div>
+    <div class="section-head">
+      <h2>31 techniques mapped</h2>
+      <p>30 forensically confirmed, 1 tracked as observed scenario intent. Filter by tactic.</p>
+    </div>
+    <div class="tactic-filters">
+      <button class="tfilter active" data-tactic="all">All (31)</button>
+      <button class="tfilter" data-tactic="initial-access">Initial Access</button>
+      <button class="tfilter" data-tactic="execution">Execution</button>
+      <button class="tfilter" data-tactic="discovery">Discovery</button>
+      <button class="tfilter" data-tactic="privilege-escalation">Privilege Escalation</button>
+      <button class="tfilter" data-tactic="credential-access">Credential Access</button>
+      <button class="tfilter" data-tactic="collection">Collection</button>
+      <button class="tfilter" data-tactic="exfiltration">Exfiltration</button>
+      <button class="tfilter" data-tactic="command-and-control">C2</button>
+      <button class="tfilter" data-tactic="defense-evasion">Defense Evasion</button>
+      <button class="tfilter" data-tactic="persistence">Persistence</button>
+      <button class="tfilter" data-tactic="impact">Impact</button>
+    </div>
+    <div class="mitre-wall" id="mitreWall">
+      <!-- Initial Access -->
+      <div class="mchip" data-tactic="initial-access"><span class="dot high"></span><span class="id">T1566.001</span> Spearphishing Attachment</div>
+      <!-- Execution -->
+      <div class="mchip" data-tactic="execution"><span class="dot high"></span><span class="id">T1204.002</span> User Execution</div>
+      <div class="mchip" data-tactic="execution"><span class="dot high"></span><span class="id">T1059.001</span> PowerShell</div>
+      <!-- Discovery -->
+      <div class="mchip" data-tactic="discovery"><span class="dot high"></span><span class="id">T1033</span> System Owner Discovery</div>
+      <div class="mchip" data-tactic="discovery"><span class="dot high"></span><span class="id">T1087.001</span> Local Account Discovery</div>
+      <div class="mchip" data-tactic="discovery"><span class="dot high"></span><span class="id">T1057</span> Process Discovery</div>
+      <div class="mchip" data-tactic="discovery"><span class="dot high"></span><span class="id">T1016</span> Network Config Discovery</div>
+      <div class="mchip" data-tactic="discovery"><span class="dot high"></span><span class="id">T1135</span> Network Share Discovery</div>
+      <div class="mchip" data-tactic="discovery"><span class="dot medium"></span><span class="id">T1018</span> Remote System Discovery</div>
+      <div class="mchip" data-tactic="discovery"><span class="dot high"></span><span class="id">T1518.001</span> Security Software Discovery</div>
+      <div class="mchip" data-tactic="discovery"><span class="dot high"></span><span class="id">T1069.001</span> Local Groups Discovery</div>
+      <!-- Credential Access -->
+      <div class="mchip" data-tactic="credential-access"><span class="dot high"></span><span class="id">T1003.001</span> LSASS Memory</div>
+      <!-- Privilege Escalation -->
+      <div class="mchip" data-tactic="privilege-escalation"><span class="dot medium"></span><span class="id">T1134</span> Token Impersonation/Theft</div>
+      <!-- Collection -->
+      <div class="mchip" data-tactic="collection"><span class="dot high"></span><span class="id">T1005</span> Data from Local System</div>
+      <div class="mchip" data-tactic="collection"><span class="dot high"></span><span class="id">T1074.001</span> Local Data Staging</div>
+      <div class="mchip" data-tactic="collection"><span class="dot high"></span><span class="id">T1560.001</span> Archive via Utility</div>
+      <!-- Exfiltration -->
+      <div class="mchip" data-tactic="exfiltration"><span class="dot high"></span><span class="id">T1041</span> Exfiltration Over C2</div>
+      <!-- C2 -->
+      <div class="mchip" data-tactic="command-and-control"><span class="dot high"></span><span class="id">T1071</span> Application Layer Protocol</div>
+      <!-- Defense Evasion -->
+      <div class="mchip" data-tactic="defense-evasion"><span class="dot high"></span><span class="id">T1562.001</span> Disable Security Tools</div>
+      <div class="mchip" data-tactic="defense-evasion"><span class="dot high"></span><span class="id">T1070.001</span> Clear Windows Event Logs</div>
+      <div class="mchip" data-tactic="defense-evasion"><span class="dot high"></span><span class="id">T1070.003</span> Clear Command History</div>
+      <div class="mchip" data-tactic="defense-evasion"><span class="dot high"></span><span class="id">T1036.005</span> Match Legitimate Name</div>
+      <div class="mchip" data-tactic="defense-evasion"><span class="dot high"></span><span class="id">T1036.007</span> File Extension Masquerading</div>
+      <div class="mchip" data-tactic="defense-evasion"><span class="dot high"></span><span class="id">T1564.001</span> Hidden Files</div>
+      <div class="mchip" data-tactic="defense-evasion"><span class="dot high"></span><span class="id">T1564.003</span> Hidden Window</div>
+      <div class="mchip" data-tactic="defense-evasion"><span class="dot high"></span><span class="id">T1112</span> Modify Registry</div>
+      <div class="mchip" data-tactic="defense-evasion"><span class="dot high"></span><span class="id">T1564.002</span> Hidden Users</div>
+      <div class="mchip" data-tactic="defense-evasion"><span class="dot medium"></span><span class="id">T1562.004</span> Disable or Modify Firewall</div>
+      <!-- Persistence -->
+      <div class="mchip" data-tactic="persistence"><span class="dot high"></span><span class="id">T1136.001</span> Create Local Account</div>
+      <div class="mchip intent" data-tactic="persistence"><span class="id">T1547.001</span> Registry Run Key — observed intent only</div>
+      <!-- Impact -->
+      <div class="mchip" data-tactic="impact"><span class="dot high"></span><span class="id">T1491</span> System Defacement</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="evidence">
+  <div class="wrap">
+    <div class="eyebrow">06 — Evidence Highlights</div>
+    <div class="section-head">
+      <h2>Selected artifacts</h2>
+      <p>A sample of the forensic screenshots documented in the full report. All 33 original figures are preserved in the report file.</p>
+    </div>
+    <div class="gallery">
+      <div class="gcard">
+        <img src="assets/img/image4.png" alt="Recovered spearphishing email" loading="lazy">
+        <div class="cap"><span class="scr">SCR-013 · T1566.001</span>Recovered spearphishing email — sender security@payroll-update.com, attachment NulltackKatz.py.</div>
+      </div>
+      <div class="gcard">
+        <img src="assets/img/image7.png" alt="Sysmon EID 10 LSASS access" loading="lazy">
+        <div class="cap"><span class="scr">SCR-012 · T1003.001</span>Sysmon EID 10 — splunkd.exe → lsass.exe, GrantedAccess=0x1FFFFF, repeating every 10 seconds.</div>
+      </div>
+      <div class="gcard">
+        <img src="assets/img/image8.png" alt="Wireshark exfiltration confirmation" loading="lazy">
+        <div class="cap"><span class="scr">SCR-011 · T1041</span>Wireshark — POST /file/upload → HTTP 200 OK, staged.zip confirmed exfiltrated.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="downloads" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="eyebrow">07 — Case Files</div>
+    <div class="section-head">
+      <h2>Full report &amp; artifacts</h2>
+      <p>The complete DFIR report, detection rules, and structured data referenced above.</p>
+    </div>
+    <div class="downloads">
+      <a class="dl-card" href="report/Operation_Constantine_DFIR_Report.pdf">
+        <div class="dl-icon">▤</div>
+        <div class="dl-title">Full Report (.pdf) — recommended</div>
+        <div class="dl-desc">40+ pages · fixed layout · opens anywhere, no Word required</div>
+      </a>
+      <a class="dl-card" href="report/Operation_Constantine_DFIR_Report.docx">
+        <div class="dl-icon">▤</div>
+        <div class="dl-title">Full Report (.docx)</div>
+        <div class="dl-desc">Same content · live self-updating Table of Contents · editable</div>
+      </a>
+      <a class="dl-card" href="detection-rules/sigma_operation_constantine.yml">
+        <div class="dl-icon">⌁</div>
+        <div class="dl-title">Sigma Rule</div>
+        <div class="dl-desc">Caldera C2 deployment + LSASS PROCESS_ALL_ACCESS</div>
+      </a>
+      <a class="dl-card" href="detection-rules/nulltackkatz_payload.yar">
+        <div class="dl-icon">⌁</div>
+        <div class="dl-title">YARA Rule</div>
+        <div class="dl-desc">NulltackKatz Python credential dumper</div>
+      </a>
+      <a class="dl-card" href="mitre-mapping/mitre_attack_mapping.csv">
+        <div class="dl-icon">▦</div>
+        <div class="dl-title">MITRE Mapping (.csv)</div>
+        <div class="dl-desc">31 techniques, tactic, evidence, confidence</div>
+      </a>
+      <a class="dl-card" href="timeline/unified_timeline.csv">
+        <div class="dl-icon">▦</div>
+        <div class="dl-title">Unified Timeline (.csv)</div>
+        <div class="dl-desc">29 events, corrected &amp; consolidated</div>
+      </a>
+      <a class="dl-card" href="iocs/network_iocs.csv">
+        <div class="dl-icon">▦</div>
+        <div class="dl-title">Network IOCs (.csv)</div>
+        <div class="dl-desc">C2 infrastructure, beacon paths, protocol</div>
+      </a>
+      <a class="dl-card" href="iocs/file_process_iocs.csv">
+        <div class="dl-icon">▦</div>
+        <div class="dl-title">File &amp; Process IOCs (.csv)</div>
+        <div class="dl-desc">Binaries, paths, hashes</div>
+      </a>
+      <a class="dl-card" href="evidence-log/evidence_log.csv">
+        <div class="dl-icon">▦</div>
+        <div class="dl-title">Evidence Log (.csv)</div>
+        <div class="dl-desc">32 SCR entries with hash/integrity status</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <span class="tlp-stamp">TLP:AMBER — RESTRICTED DISTRIBUTION</span>
+        <p class="footer-note">This case file is published for portfolio and educational purposes as part of a Purple Team / DFIR adversary-emulation exercise. All hostnames, IPs, and infrastructure are lab-isolated (VMware) and non-routable. No production systems or real organizations were involved.</p>
+      </div>
+      <div class="footer-links">
+        <a href="report/Operation_Constantine_DFIR_Report.pdf">Report</a>
+        <a href="mitre-mapping/mitre_attack_mapping.csv">MITRE CSV</a>
+        <a href="#top">Back to top ↑</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/script.js"></script>
+<script>
+  // Build the three attack-stream rails from real timeline data (minutes since 06:00Z)
+  function toMin(h,m){ return h*60+m; }
+  const base = toMin(6,0);
+  const spanMin = toMin(10,30) - base; // scale window 06:00–10:30Z
+
+  function place(id, events, cls){
+    const rail = document.getElementById(id);
+    events.forEach(([h,m,label]) => {
+      const pct = ((toMin(h,m) - base) / spanMin) * 100;
+      const node = document.createElement('div');
+      node.className = 'node ' + cls;
+      node.style.left = Math.min(98, Math.max(1, pct)) + '%';
+      node.innerHTML = '<span class="tip">' + String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + 'Z — ' + label + '</span>';
+      rail.appendChild(node);
+    });
+  }
+
+  place('rail1', [
+    [6,13,'splunkd.exe deploy cmd'],
+    [7,1,'wevtutil cl'],
+    [7,16,'first confirmed beacon'],
+    [7,58,'discovery begins'],
+    [8,7,'staging dir created'],
+    [8,28,'exfil confirmed'],
+    [10,7,'last C2 activity']
+  ], 's1');
+
+  place('rail2', [
+    [7,27,'spawns Invoke-Mimikatz'],
+    [8,20,'creates hidden account $'],
+    [9,15,'process terminated']
+  ], 's2');
+
+  place('rail3', [
+    [8,47,'NulltackKatz_v1.3.py'],
+    [8,48,'Mimikatz.exe LSASS dump']
+  ], 's3');
+</script>
+</body>
+</html>

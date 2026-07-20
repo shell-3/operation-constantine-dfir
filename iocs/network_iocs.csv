@@ -1,0 +1,8 @@
+indicator,type,value,technique,notes
+C2 Server,IP:Port,192.168.67.128:8888,T1071,HTTP unencrypted
+Victim Host,IP Address,192.168.67.129,N/A,Infrastructure context
+Beacon URI,HTTP Path,POST /beacon,T1071,~40-60s interval
+Download URI,HTTP Path,GET /file/download,T1059.001,Ability downloads
+Exfil URI,HTTP Path,POST /file/upload,T1041,2 events: 07:21:59Z and 08:28:32Z
+C2 Protocol,Protocol,HTTP (unencrypted),T1071,No TLS
+Phishing Domain,Domain,payroll-update.com,T1566.001,Spoofed sender domain

@@ -1,0 +1,6 @@
+indicator,type,value
+Sender,Email Address,security@payroll-update.com
+Reply-To,Email Address,it-security@noreply.com
+Subject,Email Subject,URGENT: Payroll System Security Update Required
+Attachment,Filename,NulltackKatz.py
+Lure Theme,Social Engineering,Salary lockout + Microsoft security update

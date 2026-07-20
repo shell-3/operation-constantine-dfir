@@ -1,0 +1,52 @@
+title: Caldera Sandcat C2 Agent Deployment (Operation Constantine)
+id: c0nst4nt1n3-sigma-001
+status: stable
+description: |
+  Detects deployment of Caldera sandcat C2 agent via PowerShell WebClient.
+  Covers splunkd.exe masquerading and anmar_hacking.exe variants. Agent
+  downloaded from C2 port 8888, written to C:\Users\Public\, launched
+  with -group red argument.
+author: Nemesis / VantaStrike.io
+date: 2026-07-05
+references:
+  - https://attack.mitre.org/techniques/T1071/
+  - https://attack.mitre.org/techniques/T1036/005/
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_download:
+    EventID: 1
+    CommandLine|contains|all:
+      - 'Net.WebClient'
+      - 'DownloadData'
+      - '8888'
+  selection_writebytes:
+    EventID: 1
+    CommandLine|contains|all:
+      - 'WriteAllBytes'
+      - 'Users\Public'
+  selection_launch:
+    EventID: 1
+    CommandLine|contains|all:
+      - 'Start-Process'
+      - 'Users\Public'
+      - '-group red'
+  selection_lsass_allaccess:
+    EventID: 10
+    TargetImage|endswith: '\lsass.exe'
+    GrantedAccess: '0x1fffff'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate Splunk in C:\Program Files\Splunk (verify path carefully)
+  - Known Splunk LSASS access may appear, but GrantedAccess 0x1fffff is abnormal
+level: critical
+tags:
+  - attack.execution
+  - attack.t1059.001
+  - attack.command_and_control
+  - attack.t1071
+  - attack.defense_evasion
+  - attack.t1036.005
+  - attack.credential_access
+  - attack.t1003.001

@@ -1,0 +1,33 @@
+scr_id,description,technique,hash_integrity
+SCR-001,SHA256 hash verification - all 5 original evidence files,Chain of Custody,See source-file SHA256 values in file_process_iocs.csv
+SCR-002,FTK Imager: NONAME NTFS 60798MB partition - Read-Only mount,Chain of Custody,Hash Not Available
+SCR-003,Prefetch: python/mimikatz/splunkd/net/ipconfig/wscript/wmic,T1204.002/T1003.001/T1071,Hash Not Available
+SCR-004,winevt Logs: Sysmon evtx 11.6MB + FileSlack 768KB,T1070.001 (evidence limit),Hash Not Available
+SCR-005,Sysmon EID 13: only Registry event = msedge.exe (legitimate),T1547.001 Negative,Hash Not Available
+SCR-006,System32 config: SOFTWARE/SYSTEM/SAM/SECURITY hives,Registry Chain of Custody,Hash Not Available
+SCR-007,NTUSER.DAT RECmd: Run keys OneDrive+Edge + WallPaper=nulltack,T1491 / T1547.001 Negative,Hash Not Available
+SCR-008,Scheduled Tasks Registry: GoogleUserPEH only (pre-attack),T1053.005 Negative,Hash Not Available
+SCR-009,System32 Tasks folder: 3 folders only - all pre-attack,T1053.005 Negative,Hash Not Available
+SCR-010,ConsoleHost_history.txt: C2 deploy + anmar_hacking variants,T1059.001/T1071,Hash Not Available
+SCR-011,Wireshark: POST /file/upload -> HTTP 200 OK (exfil confirmed),T1041,Hash Not Available
+SCR-012,Sysmon EID 10: LSASS GrantedAccess=0x1FFFFF from splunkd.exe,T1003.001/T1134,Hash Not Available
+SCR-013,Phishing email: security@payroll-update.com + NulltackKatz.py,T1566.001,Hash Not Available
+SCR-014,Master Timeline: consolidated events - 5 evidence sources,Full Kill Chain,Hash Not Available
+SCR-015,Sigma rule: sigma_operation_constantine.yml (level critical),Detection Engineering,Hash Not Available
+SCR-016,Defensive recommendations: 10 TTP categories,Recommendations,Hash Not Available
+SCR-017,Attack Knowledge Graph: 8-phase end-to-end kill-chain visualization,Full Kill Chain - KG,Hash Not Available
+SCR-018,PECmd: IPCONFIG.EXE Prefetch - T1016 confirmed 08:48:09Z,T1016,Hash Not Available
+SCR-019,RECmd NTUSER.DAT Run: OneDrive+Edge ONLY,T1547.001 Negative (HKCU),Hash Not Available
+SCR-020,RECmd SOFTWARE Run: SecurityHealth+VMware ONLY,T1547.001 Negative (HKLM),Hash Not Available
+SCR-021,RECmd SYSTEM Splunkd: ImagePath legitimate + SeDebugPrivilege,T1547.001 Negative / T1003.001,Hash Not Available
+SCR-022,Verification Summary: T1016 + Flag 1 + Flag 6 negative finding verdict,T1016 + T1547.001 Summary,Hash Not Available
+SCR-023,Sysmon EID 1: anmar_hacking.exe Invoke-Mimikatz + net user $,T1059.001/T1136.001,Hash Not Available
+SCR-024,Sysmon EID 5: anmar_hacking.exe terminated 09:15:37Z,T1071 end,Hash Not Available
+SCR-025,Defender EVTX: EID 5001 (06:12:15Z) + EID 1116/1117,T1562.001 corrected,Hash Not Available
+SCR-026,SECHEALTHUI.EXE Prefetch: RunCount=20 LastRun=06:12:04Z,T1562.001 mechanism,Hash Not Available
+SCR-027,RECmd SAM: account $ LastWrite=08:20:22.716Z - 9 accounts,T1136.001/T1564.002,Hash Not Available
+SCR-028,Sysmon EID 1: net user $ via anmar_hacking.exe,T1136.001/T1087.001,Hash Not Available
+SCR-029,Wireshark: zero packets port 8888 between 06:13Z-07:16Z,T1071 blocked window,Hash Not Available
+SCR-030,Wireshark Stream 0: first POST /beacon 07:16:43.286Z UTC,T1071 first confirmed beacon,Hash Not Available
+SCR-031,NETSH.EXE Prefetch: RunCount=1 LastRun=08:14:19Z,T1562.004,Hash Not Available
+SCR-032,Persistence Verdict: 6 sources - T1547.001 NOT IMPLEMENTED,T1547.001 Negative (final),Hash Not Available

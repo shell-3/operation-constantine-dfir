@@ -1,0 +1,32 @@
+technique_id,technique_name,tactic,primary_evidence,confidence,status
+T1566.001,Spearphishing Attachment,Initial Access,Recovered phishing email (SCR-013),HIGH,Confirmed
+T1204.002,User Execution: Malicious File,Execution,PYTHON.EXE Prefetch 08:47:44 (SCR-003),HIGH,Confirmed
+T1059.001,PowerShell,Execution,ConsoleHost_history.txt (SCR-010),HIGH,Confirmed
+T1033,System Owner/User Discovery,Discovery,JSON Step 01: $env:username,HIGH,Confirmed
+T1087.001,Local Account Discovery,Discovery,JSON Step 02: Win32_UserAccount,HIGH,Confirmed
+T1057,Process Discovery,Discovery,JSON Step 03 + TASKLIST.EXE Prefetch,HIGH,Confirmed
+T1016,System Network Config Discovery,Discovery,IPCONFIG.EXE Prefetch RunCount=1 (SCR-018),HIGH,Confirmed
+T1135,Network Share Discovery,Discovery,JSON Step 04: Get-SmbShare,HIGH,Confirmed
+T1018,Remote System Discovery,Discovery,JSON Step 05 (status=FAILED),MEDIUM,Confirmed
+T1518.001,Security Software Discovery,Discovery,WMIC.EXE Prefetch,HIGH,Confirmed
+T1069.001,Local Groups Discovery,Discovery,JSON Step 07: net localgroup,HIGH,Confirmed
+T1003.001,LSASS Memory,Credential Access,Sysmon EID 10 + Mimikatz Prefetch (SCR-012),HIGH,Confirmed
+T1134,Token Impersonation/Theft,Privilege Escalation,GrantedAccess=0x1FFFFF (SCR-012),MEDIUM,Confirmed
+T1005,Data from Local System,Collection,JSON Steps 09-11,HIGH,Confirmed
+T1074.001,Local Data Staging,Collection,JSON Steps 12 31-33,HIGH,Confirmed
+T1560.001,Archive via Utility,Collection,JSON Step 34: Compress-Archive,HIGH,Confirmed
+T1041,Exfiltration Over C2,Exfiltration,PCAP POST /file/upload + JSON Step 35 (SCR-011),HIGH,Confirmed
+T1071,Application Layer Protocol,Command and Control,splunkd.exe + PCAP 183 beacons (SCR-010),HIGH,Confirmed
+T1562.001,Disable Security Tools,Defense Evasion,Defender EID 5001 06:12:15Z (Addendum A.2),HIGH,Confirmed
+T1070.001,Clear Windows Event Logs,Defense Evasion,ConsoleHost wevtutil cl,HIGH,Confirmed
+T1070.003,Clear Command History,Defense Evasion,JSON Steps 13-14,HIGH,Confirmed
+T1036.005,Match Legitimate Name,Defense Evasion,splunkd.exe in Users\Public,HIGH,Confirmed
+T1036.007,File Extension Masquerading,Defense Evasion,WSCRIPT Prefetch + JSON Step 22,HIGH,Confirmed
+T1564.001,Hidden Files,Defense Evasion,JSON Step 20: Attrib +H +S,HIGH,Confirmed
+T1564.003,Hidden Window,Defense Evasion,JSON Step 23: -WindowStyle hidden,HIGH,Confirmed
+T1112,Modify Registry,Defense Evasion,JSON Step 21,HIGH,Confirmed
+T1136.001,Create Local Account,Persistence,SAM hive account $ 08:20:22Z (Addendum A.4),HIGH,Confirmed
+T1564.002,Hidden Users,Defense Evasion,SAM hive $ suffix account (Addendum A.4),HIGH,Confirmed
+T1562.004,Disable or Modify Firewall,Defense Evasion,NETSH.EXE Prefetch 08:14:19Z (Addendum A.6),MEDIUM,Confirmed
+T1491,System Defacement,Impact,WallPaper=C:\nulltack.png 10:06:39Z (SCR-007),HIGH,Confirmed
+T1547.001,Registry Run Key / Boot or Logon Autostart,Persistence,Six independent sources (Section 5.3) confirm no malicious Run key exists,HIGH,Observed Scenario Intent - Not Forensically Confirmed

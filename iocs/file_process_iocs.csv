@@ -1,0 +1,13 @@
+indicator,type,value_or_hash
+C2 Agent (Primary),Executable,C:\Users\Public\splunkd.exe
+C2 Agent (Secondary),Executable,C:\Users\Public\anmar_hacking.exe
+Credential Tool,Python,C:\Users\anmar\Desktop\20-Scenario\NulltackKatz_v1.3.py
+NulltackKatz Payload SHA256,Hash,0FCF079A631B2E358E3B46B89A81E572879F26A79128F03FC1325F0D9028EBF0
+Credential Tool 2,Executable,C:\Tools\mimikatz\x64\mimikatz.exe
+Staging Directory,Directory,C:\Windows\system32\staged\
+Exfil Archive,ZIP,C:\Windows\system32\staged\staged.zip
+Defacement File,PNG,C:\nulltack.png (wallpaper)
+Hidden Account,User,"$ (created 08:20:22Z, SAM-confirmed)"
+Network Capture SHA256,Hash,3DA0AE422ACF0E162B76916B8EC3FC7E0E08FD50EA752748739075DE3CD014B3
+Attacker Operation Report SHA256,Hash,6E9DFDB8CBA66AA593A1B9CDFC0143A119E7501A61E283F374F9D3A4B739508E
+Disk Image SHA256,Hash,E19BEC3515A4D8E7EACF989269A4F407BF591115BC623D7D07F844D315788786
